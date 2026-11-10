@@ -1,48 +1,118 @@
 <!doctype html>
-<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>หาสถานีตำรวจเขตอำนาจสอบสวน</title>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ค้นหาสถานีตำรวจเขตอำนาจสอบสวน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f6f7f9;--fg:#1c1f24;--card:#fff;--bd:#d5d9e0;--ac:#0b5cad;--warn:#8a5a00;--wbg:#fff3d6}
-@media(prefers-color-scheme:dark){:root{--bg:#14171c;--fg:#e8eaee;--card:#1e232b;--bd:#343b46;--ac:#6cb0ff;--warn:#ffd27a;--wbg:#3a2f12}}
-body{margin:0;padding:16px;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,"Noto Sans Thai",sans-serif}
-main{max-width:720px;margin:0 auto}h1{font-size:1.4rem}
-form{display:grid;gap:10px}label{display:grid;gap:4px}
-input,button{font:inherit;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg)}
-button{background:var(--ac);color:var(--bg);border:0;cursor:pointer}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin:12px 0}
-.st{border-top:1px solid var(--bd);padding-top:8px;margin-top:8px}
-.badge,.warn{background:var(--wbg);color:var(--warn);border-radius:6px;padding:2px 8px;font-size:.95rem}
-.warn{display:block;margin:8px 0}
-</style></head><body><main>
-<h1>หาสถานีตำรวจเขตอำนาจสอบสวน</h1>
-<form id="f"><label>ตำบล<input id="t" list="tl" autocomplete="off"></label>
-<label>อำเภอ<input id="a" list="al" autocomplete="off"></label>
-<button>ค้นหา</button></form>
-<datalist id="tl"></datalist><datalist id="al"></datalist>
-<div id="out"></div>
-<p id="foot"></p>
+:root{--bg:#f2f5fa;--card:#fff;--text:#1f2937;--muted:#566175;--line:#d5dce8;--accent:#2457b8;--chip:#e6eefc;--warn-bg:#fff4dc;--warn:#7a4b00;--shadow:0 2px 10px rgba(30,50,90,.08)}
+@media (prefers-color-scheme:dark){:root{--bg:#10151e;--card:#1a2230;--text:#e6ebf3;--muted:#a3afc2;--line:#33405a;--accent:#8db4ff;--chip:#243452;--warn-bg:#3a2e12;--warn:#ffd88a;--shadow:0 2px 10px rgba(0,0,0,.4)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.6 "Noto Sans Thai",system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:24px 16px 40px}
+h1{font-size:1.5rem;line-height:1.3;margin:0 0 4px}
+.sub{margin:0;color:var(--muted)}.credit{margin:4px 0 20px;color:var(--muted);font-size:1rem;font-weight:600}
+.card{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:18px;border:1px solid var(--line)}
+.grid{display:grid;gap:12px}
+@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
+label{display:block;font-weight:600;font-size:.9rem;margin-bottom:4px}
+input{width:100%;height:48px;padding:0 12px;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:10px;transition:border-color .15s,box-shadow .15s}
+input:hover{border-color:var(--accent)}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:flex;justify-content:flex-end;margin-top:8px}
+button,.btn{font:inherit;font-size:.95rem;color:var(--accent);background:none;border:1px solid var(--line);border-radius:8px;padding:4px 12px;cursor:pointer;text-decoration:none;transition:background .15s}
+button:hover,.btn:hover{background:var(--chip)}
+.link{border:0;text-decoration:underline}
+#out{margin-top:16px;display:grid;gap:12px}
+.in{animation:in .15s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+@media(prefers-reduced-motion:reduce){.in{animation:none}*{transition:none!important}}
+.muted{color:var(--muted)}.place{color:var(--muted);font-size:1rem;margin:0 0 8px}
+.st{padding:10px 0;border-top:1px solid var(--line)}.st:first-of-type{border-top:0}
+.name{font-size:1.4rem;font-weight:700;line-height:1.3}.full{font-size:1rem;color:var(--muted)}
+.badge{display:inline-block;background:var(--warn-bg);color:var(--warn);border-radius:999px;padding:0 10px;font-size:.8rem;margin-left:6px;font-weight:400}
+.note{background:var(--warn-bg);color:var(--warn);border-radius:10px;padding:8px 12px;font-size:.9rem;margin-bottom:6px}
+.acts{display:flex;gap:8px;margin-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.chips button{background:var(--chip);border:0;border-radius:999px;padding:6px 14px;font-size:.9rem}
+footer{margin-top:28px;font-size:.95rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<h1>ค้นหาสถานีตำรวจเขตอำนาจสอบสวน</h1>
+<p class="sub">พิมพ์ตำบล แล้วเลือกอำเภอ/จังหวัดเพื่อกรองให้แคบลง</p>
+<p class="credit">พัฒนาโดย ศุภชัย THEEST</p>
+<form class="card" id="f" autocomplete="off">
+  <div class="grid">
+    <div><label for="t">ตำบล</label><input id="t" list="lt" placeholder="เช่น หอคำ" autofocus></div>
+    <div><label for="a">อำเภอ</label><input id="a" list="la" placeholder="เช่น เมืองบึงกาฬ (ไม่บังคับ)"></div>
+    <div><label for="p">จังหวัด</label><input id="p" list="lp" placeholder="เช่น บึงกาฬ (ไม่บังคับ)"></div>
+  </div>
+  <datalist id="lt"></datalist><datalist id="la"></datalist><datalist id="lp"></datalist>
+  <div class="row"><button type="button" id="clr" class="link">ล้าง</button></div>
+</form>
+<div id="out" aria-live="polite"><p class="muted">กำลังโหลดข้อมูล…</p></div>
+<footer id="ft">พัฒนาโดย ศุภชัย THEEST</footer>
 </main>
 <script type="module">
 import { findByTambon, normPlace } from './jurisdiction.js';
-const [data, admin] = await Promise.all(['jurisdiction.json', 'thai-admin.json'].map(u => fetch(u).then(r => r.json())));
-const $ = id => document.getElementById(id);
+const $ = id => document.getElementById(id), out = $('out');
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const pairs = Object.values(admin).flatMap(d => Object.entries(d));
-const fill = (id, list) => { $(id).innerHTML = [...new Set(list)].map(x => `<option value="${esc(x)}">`).join(''); };
-const tambons = () => {
-  const a = normPlace($('a').value);
-  fill('tl', pairs.filter(([n]) => !a || normPlace(n) === a).flatMap(([, t]) => t));
-};
-fill('al', pairs.map(([a]) => a)); tambons(); $('a').addEventListener('input', tambons);
-$('foot').textContent = `ข้อมูลร่างจากแหล่งเปิด (${data.built}) พนักงานสอบสวนต้องตรวจเอง`;
-const addr = s => [s.เลขที่, s.หมู่ที่ && 'หมู่ ' + s.หมู่ที่, s.ถนน, s.ตำบล && 'ต.' + s.ตำบล, s.อำเภอ && 'อ.' + s.อำเภอ, s.จังหวัด && 'จ.' + s.จังหวัด, s.รหัสไปรษณีย์].filter(Boolean).join(' ');
-$('f').addEventListener('submit', e => {
-  e.preventDefault();
-  const res = findByTambon(data, { อำเภอ: $('a').value, ตำบล: $('t').value });
-  const many = res.length > 1 || res.some(m => m.options.length > 1);
-  $('out').innerHTML = !res.length ? '<p class="warn">ไม่พบข้อมูล</p>' :
-    (many ? '<span class="warn">ต้องตรวจเลือกเอง</span>' : '') + res.map(m => `<div class="card"><b>จ.${esc(m.จังหวัด)} อ.${esc(m.อำเภอ)} ต.${esc(m.ตำบล)}</b>` +
-      (m.level === 'อำเภอ' ? '<span class="warn">ไม่พบตำบลนี้ แสดงทุกสถานีในอำเภอ</span>' : '') +
-      m.options.map(({ station: s, share }) => `<div class="st"><b>${esc(s.ชื่อ)} (${esc(s.ย่อ)})</b>${share != null ? ` — ${esc(share)}%` : ''}${s.ประมาณ ? ' <span class="badge">ที่อยู่ประมาณ</span>' : ''}<br>${esc(addr(s))}</div>`).join('') + '</div>').join('');
+const EX = [['หอคำ', 'เมืองบึงกาฬ', 'บึงกาฬ'], ['ในเมือง', 'เมือง', 'ขอนแก่น'], ['ปทุมวัน', 'ปทุมวัน', 'กรุงเทพมหานคร']];
+let data, admin;
+const opts = (id, arr) => { $(id).innerHTML = [...new Set(arr)].map(x => `<option value="${esc(x)}">`).join(''); };
+function lists() {
+  const p = normPlace($('p').value), a = normPlace($('a').value), A = Object.entries(admin);
+  const dist = A.filter(([k]) => !p || normPlace(k) === p).flatMap(([, d]) => Object.entries(d));
+  opts('lp', A.map(x => x[0]));
+  opts('la', dist.map(x => x[0]));
+  opts('lt', dist.filter(([k]) => !a || normPlace(k) === a).flatMap(x => x[1]));
+}
+const addr = s => [s.เลขที่, s.หมู่ที่ && 'หมู่ ' + s.หมู่ที่, s.ถนน && 'ถนน' + s.ถนน, s.ตำบล && 'ต.' + s.ตำบล, s.อำเภอ && 'อ.' + s.อำเภอ, s.จังหวัด && 'จ.' + s.จังหวัด, s.รหัสไปรษณีย์].filter(Boolean).join(' ');
+function card(m) {
+  const sts = m.options.map(({ station: s, share }) => `<div class="st">
+    <div class="name">${esc(s.ย่อ)}${s.ประมาณ ? '<span class="badge">ที่อยู่ประมาณ — ควรตรวจ</span>' : ''}</div>
+    <div class="full">${esc(s.ชื่อ)}${share > 0 ? ` · ครอบคลุมพื้นที่ราว ${esc(share)}%` : ''}</div>
+    <div>${esc(addr(s))}</div>
+    <div class="acts"><button type="button" data-c="${esc(s.ชื่อ + ' ' + addr(s))}">คัดลอกที่อยู่</button>
+    <a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(s.ชื่อ + ' ' + (s.จังหวัด || m.จังหวัด))}">แผนที่</a></div></div>`).join('');
+  return `<section class="card in"><p class="place">ต.${esc(m.ตำบล)} อ.${esc(m.อำเภอ)} จ.${esc(m.จังหวัด)}</p>
+    ${m.level === 'อำเภอ' ? '<div class="note">ไม่พบตำบลนี้ในข้อมูล แสดงทุกสถานีในอำเภอ</div>' : ''}
+    ${m.options.length > 1 ? '<div class="note">มีหลายสถานี โปรดตรวจเลือกเอง</div>' : ''}${sts || '<p class="muted">ไม่มีสถานีในข้อมูล</p>'}</section>`;
+}
+function search() {
+  if (!data) return;
+  const q = { จังหวัด: $('p').value, อำเภอ: $('a').value, ตำบล: $('t').value };
+  const tl = normPlace(q.ตำบล).length, hasA = !!normPlace(q.อำเภอ);
+  if (!tl && !hasA) {
+    out.innerHTML = `<div class="card in"><p class="muted" style="margin:0">พิมพ์ตำบลอย่างน้อย 2 ตัวอักษร หรือระบุอำเภอ หรือลองตัวอย่าง</p><div class="chips">${EX.map((e, i) => `<button type="button" data-e="${i}">${esc(e[0])} · ${esc(e[2])}</button>`).join('')}</div></div>`;
+    return;
+  }
+  if (tl < 2 && !hasA) { out.innerHTML = '<p class="muted">พิมพ์ตำบลอย่างน้อย 2 ตัวอักษร</p>'; return; }
+  const r = findByTambon(data, q);
+  if (!r.length) { out.innerHTML = '<div class="card in">ไม่พบพื้นที่ที่ตรงกัน ลองตรวจการสะกด หรือลบอำเภอ/จังหวัดออกแล้วค้นใหม่</div>'; return; }
+  out.innerHTML = (r.length > 1 ? `<p class="muted in">พบ ${r.length} พื้นที่ — เลือกอำเภอ/จังหวัดเพื่อกรอง${r.length > 20 ? ' (แสดง 20 แรก)' : ''}</p>` : '') + r.slice(0, 20).map(card).join('');
+}
+let tm; const go = () => { clearTimeout(tm); tm = setTimeout(search, 150); };
+for (const id of ['t', 'a', 'p']) $(id).addEventListener('input', () => { lists(); go(); });
+$('f').addEventListener('submit', e => { e.preventDefault(); search(); });
+$('clr').onclick = () => { $('f').reset(); lists(); search(); $('t').focus(); };
+out.addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.e) { [$('t').value, $('a').value, $('p').value] = EX[b.dataset.e]; lists(); search(); }
+  else if (b.dataset.c) {
+    const o = b.textContent;
+    try { await navigator.clipboard.writeText(b.dataset.c); b.textContent = 'คัดลอกแล้ว ✓'; } catch { b.textContent = 'คัดลอกไม่ได้'; }
+    setTimeout(() => b.textContent = o, 1500);
+  }
 });
-</script></body></html>
+try {
+  [data, admin] = await Promise.all(['jurisdiction.json', 'thai-admin.json'].map(u => fetch(u).then(r => { if (!r.ok) throw 0; return r.json(); })));
+  $('ft').innerHTML = `ข้อมูลร่างจากรายชื่อสถานี–ตำบลของ ThaiPoliceOnline และแหล่งเปิด (ปรับปรุง ${esc(data.built)}) · พนักงานสอบสวนต้องตรวจเอง · พัฒนาโดย ศุภชัย THEEST`;
+  lists(); search();
+} catch { out.innerHTML = '<div class="card">โหลดข้อมูลไม่สำเร็จ กรุณาเปิดผ่านเว็บเซิร์ฟเวอร์และลองใหม่</div>'; }
+</script>
+</body>
+</html>

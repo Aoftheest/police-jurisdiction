@@ -36,13 +36,14 @@ export function stationFor(data, person) {
   return level === 'ตำบล' && options.length === 1 ? options[0].station : null;
 }
 
-// หาจากตำบล+อำเภอโดยไม่ต้องรู้จังหวัด (ตำบลซ้ำข้ามอำเภอไม่มี ยกเว้นพิมพ์ "เมือง" เฉยๆ ซึ่งได้หลายจังหวัด)
-export function findByTambon(data, { อำเภอ, ตำบล } = {}) {
-  const d = normPlace(อำเภอ), t = normPlace(ตำบล);
-  if (!data || !d) return [];
+// หาจากตำบล/อำเภอ(/จังหวัด) โดยไม่ต้องรู้จังหวัด; อำเภอเว้นได้ถ้ามีตำบล; "เมือง" เฉยๆ ได้หลายจังหวัด
+export function findByTambon(data, { จังหวัด, อำเภอ, ตำบล } = {}) {
+  const d = normPlace(อำเภอ), t = normPlace(ตำบล), pv = จังหวัด ? placeKey(จังหวัด, '', '').split('|')[0] : '';
+  if (!data || (!d && !t)) return [];
   const rows = Object.keys(data.areas).map(k => k.split('|'))
-    .filter(([p, dist]) => dist === d || (d === 'เมือง' && dist === 'เมือง' + p));
+    .filter(([p, dist]) => (!pv || p === pv) && (!d || dist === d || (d === 'เมือง' && dist === 'เมือง' + p)));
   const exact = t ? rows.filter(r => r[2] === t) : [];
+  if (!d && !exact.length) return [];
   const pick = exact.length ? exact : rows;
   const seen = new Set();
   return pick.filter(([p, dist, tam]) => !seen.has(p + dist + (exact.length ? tam : '')) && seen.add(p + dist + (exact.length ? tam : '')))
