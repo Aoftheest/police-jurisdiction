@@ -43,7 +43,7 @@ footer{margin-top:28px;font-size:.95rem;color:var(--muted)}
 <main>
 <h1>ค้นหาสถานีตำรวจเขตอำนาจสอบสวน</h1>
 <p class="sub">พิมพ์ตำบล แล้วเลือกอำเภอ/จังหวัดเพื่อกรองให้แคบลง</p>
-<p class="credit">พัฒนาโดย ศุภชัย THEEST</p>
+<p class="credit">พัฒนาโดย AOFTHEEST</p>
 <form class="card" id="f" autocomplete="off">
   <div class="grid">
     <div><label for="t">ตำบล</label><input id="t" list="lt" placeholder="เช่น หอคำ" autofocus></div>
@@ -54,7 +54,7 @@ footer{margin-top:28px;font-size:.95rem;color:var(--muted)}
   <div class="row"><button type="button" id="clr" class="link">ล้าง</button></div>
 </form>
 <div id="out" aria-live="polite"><p class="muted">กำลังโหลดข้อมูล…</p></div>
-<footer id="ft">พัฒนาโดย ศุภชัย THEEST</footer>
+<footer id="ft">พัฒนาโดย AOFTHEEST</footer>
 </main>
 <script type="module">
 import { findByTambon, normPlace } from './jurisdiction.js';
@@ -110,7 +110,7 @@ out.addEventListener('click', async e => {
 });
 try {
   [data, admin] = await Promise.all(['jurisdiction.json', 'thai-admin.json'].map(u => fetch(u).then(r => { if (!r.ok) throw 0; return r.json(); })));
-  $('ft').innerHTML = `ข้อมูลร่างจากรายชื่อสถานี–ตำบลของ ThaiPoliceOnline และแหล่งเปิด (ปรับปรุง ${esc(data.built)}) · พนักงานสอบสวนต้องตรวจเอง · พัฒนาโดย ศุภชัย THEEST`;
+  $('ft').innerHTML = `ข้อมูลร่างจากรายชื่อสถานี–ตำบลของ ThaiPoliceOnline และแหล่งเปิด (ปรับปรุง ${esc(data.built)}) · พนักงานสอบสวนต้องตรวจเอง · พัฒนาโดย AOFTHEEST`;
   lists(); search();
 } catch { out.innerHTML = '<div class="card">โหลดข้อมูลไม่สำเร็จ กรุณาเปิดผ่านเว็บเซิร์ฟเวอร์และลองใหม่</div>'; }
 </script>
